@@ -47,6 +47,13 @@ class User extends Authenticatable
             return null;
         }
 
-        return url('/api/storage/' . $this->foto);
+        $url = url('/api/storage/' . $this->foto);
+
+        // Force HTTPS explicitly for Railway production
+        if (app()->environment('production')) {
+            return str_replace('http://', 'https://', $url);
+        }
+
+        return $url;
     }
 }

@@ -106,6 +106,11 @@ class ProfileController extends Controller
             // Generate URL using API route instead of storage link
             $fotoUrl = url('/api/storage/' . $relativePath);
 
+            // Force HTTPS explicitly for Railway production
+            if (app()->environment('production')) {
+                $fotoUrl = str_replace('http://', 'https://', $fotoUrl);
+            }
+
             return response()->json([
                 'success'  => true,
                 'message'  => 'Foto profil berhasil diunggah dan dioptimasi.',
