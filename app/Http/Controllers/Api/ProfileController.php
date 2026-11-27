@@ -102,11 +102,15 @@ class ProfileController extends Controller
             $user->update([
                 'foto' => $relativePath,
             ]);
+
+            // Generate URL using API route instead of storage link
+            $fotoUrl = url('/api/storage/' . $relativePath);
+
             return response()->json([
                 'success'  => true,
                 'message'  => 'Foto profil berhasil diunggah dan dioptimasi.',
                 'user'     => $user->fresh(),
-                'foto_url' => $request->getSchemeAndHttpHost() . '/storage/' . $relativePath,
+                'foto_url' => $fotoUrl,
             ], 200);
         } catch (Throwable $e) {
             return response()->json([

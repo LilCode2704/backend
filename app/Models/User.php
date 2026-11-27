@@ -32,4 +32,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Append foto_url to JSON response
+     */
+    protected $appends = ['foto_url'];
+
+    /**
+     * Get the full URL for the user's photo
+     */
+    public function getFotoUrlAttribute(): ?string
+    {
+        if (!$this->foto) {
+            return null;
+        }
+
+        return url('/api/storage/' . $this->foto);
+    }
 }
