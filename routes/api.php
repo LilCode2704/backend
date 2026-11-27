@@ -13,11 +13,26 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/storage/{path}', function ($path) {
     $filePath = 'public/' . $path;
 
+    // Debug logging
+    \Log::info('Storage request', [
+        'path' => $path,
+        'fullPath' => $filePath,
+        'exists' => Storage::exists($filePath),
+        'storagePath' => Storage::path($filePath),
+        'allFiles' => Storage::disk('public')->allFiles('profiles'),
+    ]);
+
     if (!Storage::exists($filePath)) {
-        abort(404);
+        abort(404, 'File not found in storage');
     }
 
-    return response()->file(Storage::path($filePath));
+    $fullPath = Storage::path($filePath);
+
+    if (!file_exists($fullPath)) {
+        abort(404, 'File path exists in Storage but not on filesystem');
+    }
+
+    return response()->file($fullPath);
 })->where('path', '.*');
 // Endpoint Terproteksi (Wajib membawa Header Authorization: Bearer <token>)
 Route::middleware('auth:sanctum')->group(function () {
