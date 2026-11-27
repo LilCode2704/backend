@@ -9,6 +9,19 @@ use Illuminate\Support\Facades\Storage;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Debug endpoint - cek storage files
+Route::get('/debug/storage', function () {
+    $publicDisk = Storage::disk('public');
+    
+    return response()->json([
+        'storage_path' => storage_path('app/public'),
+        'public_path' => public_path('storage'),
+        'profiles_exists' => $publicDisk->exists('profiles'),
+        'all_files' => $publicDisk->allFiles('profiles'),
+        'disk_config' => config('filesystems.disks.public'),
+    ]);
+});
+
 // Serve storage files (photos)
 Route::get('/storage/{path}', function ($path) {
     $filePath = 'public/' . $path;
